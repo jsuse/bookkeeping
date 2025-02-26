@@ -35,7 +35,7 @@ class CustomedOutlinedButton extends StatelessWidget {
 }
 
 class CustomedOptionButton extends StatefulWidget {
-  CustomedOptionButton({
+  const CustomedOptionButton({
     super.key,
     required this.text,
     this.onTap,
@@ -44,7 +44,7 @@ class CustomedOptionButton extends StatefulWidget {
 
   final String text;
   final Function? onTap;
-  bool isSelect;
+  final bool isSelect;
 
   @override
   State<CustomedOptionButton> createState() => _CustomedOptionButtonState();
@@ -53,12 +53,12 @@ class CustomedOptionButton extends StatefulWidget {
 class _CustomedOptionButtonState extends State<CustomedOptionButton> {
   Color textColor = Colors.black;
   Color backgroundColor = Colors.white;
-  bool isSelect = false;
+  bool isSelected = false;
 
   @override
   void initState() {
     super.initState();
-    isSelect = widget.isSelect;
+    isSelected = widget.isSelect;
   }
 
   @override
@@ -67,7 +67,7 @@ class _CustomedOptionButtonState extends State<CustomedOptionButton> {
       padding: const EdgeInsets.all(7),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: widget.isSelect
+          backgroundColor: isSelected
               ? const Color.fromARGB(255, 230, 230, 230)
               : Colors.white,
           fixedSize: const Size(120, 60),
@@ -78,14 +78,15 @@ class _CustomedOptionButtonState extends State<CustomedOptionButton> {
         child: Text(
           widget.text,
           style: TextStyle(
-            color: widget.isSelect ? AppTheme.lightGrey : Colors.black,
+            color: isSelected ? AppTheme.lightGrey : Colors.black,
           ),
         ),
         onPressed: () {
-          widget.isSelect = !widget.isSelect;
+          setState(() {
+            isSelected = !isSelected;
+          });
 
           if (widget.onTap != null) widget.onTap!();
-          setState(() {});
         },
       ),
     );
@@ -93,7 +94,7 @@ class _CustomedOptionButtonState extends State<CustomedOptionButton> {
 }
 
 class SubtypeOptionButton extends StatefulWidget {
-  SubtypeOptionButton({
+  const SubtypeOptionButton({
     super.key,
     required this.imagePath,
     required this.label,
@@ -106,7 +107,7 @@ class SubtypeOptionButton extends StatefulWidget {
   final String label;
   final Function? onPress;
   final ValueChanged<bool>? onChange;
-  String? std;
+  final String? std;
 
   @override
   State<SubtypeOptionButton> createState() => _SubtypeOptionButtonState();
@@ -114,16 +115,17 @@ class SubtypeOptionButton extends StatefulWidget {
 
 class _SubtypeOptionButtonState extends State<SubtypeOptionButton> {
   bool isSelected = false;
-  Color unselectedBackColor = ThemeData().scaffoldBackgroundColor;
-  Color selectedBackColor = AppTheme.lightGreen;
+  final Color unselectedBackColor = ThemeData().scaffoldBackgroundColor;
+  final Color selectedBackColor = AppTheme.lightGreen;
+
+  @override
+  void initState() {
+    super.initState();
+    isSelected = widget.std == widget.label;
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.std == widget.label) {
-      isSelected = true;
-    } else {
-      isSelected = false;
-    }
     return Padding(
       padding: const EdgeInsets.all(10),
       child: ElevatedButton(
@@ -131,13 +133,14 @@ class _SubtypeOptionButtonState extends State<SubtypeOptionButton> {
           elevation: 0,
           backgroundColor: isSelected
               ? selectedBackColor
-              : ThemeData().scaffoldBackgroundColor,
+              : unselectedBackColor,
         ),
         onPressed: () {
-          // isSelected = !isSelected;
+          setState(() {
+            isSelected = !isSelected;
+          });
           if (widget.onPress != null) widget.onPress!();
           if (widget.onChange != null) widget.onChange!(isSelected);
-          setState(() {});
         },
         child: Column(
           children: [

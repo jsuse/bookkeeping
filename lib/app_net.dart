@@ -72,8 +72,10 @@ class AppNet {
   static getBaseURL() async {
     Response response =
         await dio.get('https://princesaoke.github.io/PrinceSaoKe.txt');
-    print('--------------------------baseURL--------------------------');
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint('--------------------------baseURL--------------------------');
+      debugPrint(response.data.toString());
+    }
     if (response.statusCode == 200) {
       Map map = jsonDecode(response.toString());
       String url = map['bookkeeping_base_url'];
@@ -118,7 +120,9 @@ class AppNet {
       'user_code': pin,
     });
     Response response = await dio.post(_registerURL, data: formData);
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return UniversalBean.fromMap(response.data);
   }
 
@@ -131,7 +135,9 @@ class AppNet {
       {'telephone': tele, 'password': password},
     );
     Response response = await dio.post(_loginURL, data: formData);
-    print(response);
+    if (kDebugMode) {
+      debugPrint(response.data.toString());
+    }
     return LoginBean.formMap(response.data);
   }
 
@@ -139,7 +145,9 @@ class AppNet {
   static Future<UniversalBean> sendPin({required String tele}) async {
     FormData formData = FormData.fromMap({'telephone': tele});
     Response response = await dio.post(_sendPinURL, data: formData);
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data.toString());
+    }
     return UniversalBean.fromMap(response.data);
   }
 
@@ -157,20 +165,22 @@ class AppNet {
     String? remark,
   }) async {
     FormData formData = FormData.fromMap({
-      'user_id': userID ?? AppData().currUserID,
+      'user_id': (userID ?? AppData().currUserID).toString(),
       'type': type,
       'subtype': subtype,
       'bill': receiptType,
       'date': AppTools.toY0M0D(time),
       'time': '${AppTools.to0Hour0Min(time)}:00',
-      'money': money,
+      'money': money.toString(),
       'froms': from,
       'value': item,
       if (image != null) 'image': await MultipartFile.fromFile(image.path),
       'remarks': remark,
     });
     Response response = await dio.post(_newBill, data: formData);
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return UniversalBean.fromMap(response.data);
   }
 
@@ -188,20 +198,22 @@ class AppNet {
     String? remark,
   }) async {
     FormData formData = FormData.fromMap({
-      'user_id': billID,
+      'user_id': billID.toString(),
       'type': type,
       'subtype': subtype,
       'bill': receiptType,
       'date': time == null ? null : AppTools.toY0M0D(time),
       'time': time == null ? null : AppTools.to0Hour0Min(time),
-      'money': money,
+      'money': money?.toString(),
       'froms': from,
       'value': item,
       'image': image,
       'remarks': remark,
     });
     Response response = await dio.post(_changeBill, data: formData);
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return UniversalBean.fromMap(response.data);
   }
 
@@ -209,7 +221,9 @@ class AppNet {
   static Future<UniversalBean> deleteBill({required int billID}) async {
     FormData formData = FormData.fromMap({'id': billID});
     Response response = await dio.post(_deleteBill, data: formData);
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return UniversalBean.fromMap(response.data);
   }
 
@@ -219,7 +233,9 @@ class AppNet {
       _getBillURL,
       queryParameters: {'id': billID},
     );
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return BillBean.fromMap(response.data);
   }
 
@@ -228,14 +244,18 @@ class AppNet {
     int? userID,
     required DateTime date,
   }) async {
-    print('-------------获取首页信息----------------------------');
-    print(_homeDataURL);
-    print('-------------获取首页信息结束----------------------------');
+    if (kDebugMode) {
+      debugPrint('-------------获取首页信息----------------------------');
+      debugPrint(_homeDataURL);
+      debugPrint('-------------获取首页信息结束----------------------------');
+    }
     Response response = await dio.get(_homeDataURL, queryParameters: {
       'user_id': userID ?? AppData().currUserID,
       'date': AppTools.toY0M0D(date)
     });
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return HomeDataBean.fromMap(response.data);
   }
 
@@ -263,7 +283,9 @@ class AppNet {
       'subtype': subtype,
     });
     Response response = await dio.post(_searchURL, data: formData);
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return SearchBillBean.fromMap(response.data);
   }
 
@@ -274,7 +296,9 @@ class AppNet {
       {'type1': currCountry, 'money1': currMoney},
     );
     Response response = await dio.post(_exchangeRateURL, data: formData);
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return ExchangeRateBean.fromMap(response.data);
   }
 
@@ -284,7 +308,9 @@ class AppNet {
       _achievementURL,
       queryParameters: {'user_id': userID ??= AppData().currUserID},
     );
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return AchievementBean.fromMap(response.data);
   }
 
@@ -299,7 +325,9 @@ class AppNet {
       'type': type,
       'year': year,
     });
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return BarChartYearBean.fromMap(response.data);
   }
 
@@ -318,7 +346,9 @@ class AppNet {
       'month': month,
       'subtype': subType,
     });
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return BarChartMonBean.fromMap(response.data);
   }
 
@@ -335,7 +365,9 @@ class AppNet {
       'month': dateTime.month,
       'day': dateTime.day,
     });
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return BarChartWeekBean.fromMap(response.data);
   }
 
@@ -353,7 +385,9 @@ class AppNet {
       'subtype': subType,
     });
     Response response = await dio.post(_expectExpendURL, data: formData);
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return ExpectExpendBean.fromMap(response.data);
   }
 
@@ -364,11 +398,13 @@ class AppNet {
     required DateTime dateTime,
     String? subType,
   }) async {
-    print(userID ?? AppData().currUserID);
-    print(dateTime.year);
-    print(dateTime.month);
-    print(subType);
-    print(type);
+    if (kDebugMode) {
+      debugPrint((userID ?? AppData().currUserID).toString());
+      debugPrint(dateTime.year.toString());
+      debugPrint(dateTime.month.toString());
+      debugPrint(subType);
+      debugPrint(type);
+    }
     if (subType == '') subType = null;
     Response response = await dio.get(_totalMonDataURL, queryParameters: {
       'user_id': userID ?? AppData().currUserID,
@@ -377,16 +413,22 @@ class AppNet {
       'month': dateTime.month,
       if (subType != null) 'subtype': subType,
     });
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return TotalMonDataBean.fromMap(response.data);
   }
 
   /// 文本分类
   static Future<TextSortBean> textSort({required String text}) async {
-    print(text);
+    if (kDebugMode) {
+      debugPrint(text);
+    }
     Response response =
         await dio.get(_textSortURL, queryParameters: {'text': text});
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return TextSortBean.fromMap(response.data);
   }
 
@@ -402,7 +444,9 @@ class AppNet {
     if (response.data['status'] == 404) {
       return bookkeepingSuggest(userID: userID, dateTime: dateTime);
     }
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return BookkeepingSuggestBean.fromMap(response.data);
   }
 
@@ -416,7 +460,9 @@ class AppNet {
       'yuzhong': language,
     });
     Response response = await dio.post(_speechRecognitionURL, data: formData);
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return SpeechRecognitionBean.fromMap(response.data);
   }
 
@@ -475,14 +521,18 @@ class AppNet {
     if (correctDirection) realURL += '&correct_direction=1';
     if (sizeAndPositon != null) realURL += '&size_and_positon=$sizeAndPositon';
     realURL += '&jpeg_quality=$quality';
-    print(realURL);
+    if (kDebugMode) {
+      debugPrint(realURL);
+    }
 
     Response response = await dio.post(
       realURL,
       data: Stream.fromIterable(image.map((e) => [e])),
       options: _options,
     );
-    print(response.data);
+    if (kDebugMode) {
+      debugPrint(response.data);
+    }
     return CropEnhanceBean.fromMap(response.data);
   }
 
